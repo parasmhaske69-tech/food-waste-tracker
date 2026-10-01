@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Waste Reduction & Expiry Tracker</title>
+    <!-- Yeh line CSS ko jodne ke liye hai. File ka naam style.css hi hona chahiye -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🥦 Food Expiry Tracker</h1>
+        <p>Apne groceries add karein aur waste hone se bachayein!</p>
+        
+        <form id="foodForm">
+            <input type="text" id="itemName" placeholder="Item Name (e.g. Milk)" required>
+            <input type="date" id="expiryDate" required>
+            <button type="submit">Add Item</button>
+        </form>
+
+        <h2>🛒 Your Pantry</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Expiry Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="foodList">
+                <!-- Data yahan aayega -->
+            </tbody>
+        </table>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
