@@ -21,7 +21,7 @@ h1, h2, p {
     text-align: center;
 }
 
-/* Default Layout for Mobile (Vertical) */
+/* Mobile Responsive Form (Vertical Layout) */
 form {
     display: flex;
     flex-direction: column; 
@@ -52,7 +52,7 @@ button:hover {
     background-color: #218838;
 }
 
-/* Desktop Layout (Side by Side) */
+/* Desktop Form Layout (Side-by-Side) */
 @media (min-width: 600px) {
     form {
         flex-direction: row;
@@ -82,7 +82,7 @@ button:hover {
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 400px;
+    min-width: 400px; /* Prevents breaking on small screens */
 }
 
 th, td {
@@ -91,7 +91,7 @@ th, td {
     text-align: center;
 }
 
-/* Status Colors */
+/* Expiry Status Colors */
 .expiring-soon { background-color: #ffcccc; color: #cc0000; font-weight: bold; }
 .expiring-medium { background-color: #fff3cd; color: #856404; font-weight: bold; }
 .expiring-safe { background-color: #d4edda; color: #155724; font-weight: bold; }
