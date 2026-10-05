@@ -1,12 +1,6 @@
-// Mock Database Demo Barcodes ke liye
-const mockDatabase = {
-    "8901030922881": { name: "Amul Milk", shelfLife: 2 },
-    "8901262010014": { name: "Amul Butter", shelfLife: 30 },
-    "8901058852337": { name: "Maggi Noodles", shelfLife: 180 },
-    "Bread": { name: "Fresh Bread", shelfLife: 4 } 
-};
-
-// Scanner Logic
+// ==========================================
+// 1. BARCODE & QR SCANNER LOGIC (Smart Router)
+// ==========================================
 const scanBtn = document.getElementById('scanBtn');
 const readerDiv = document.getElementById('reader');
 let html5QrcodeScanner;
@@ -22,28 +16,81 @@ scanBtn.addEventListener('click', () => {
 });
 
 function onScanSuccess(decodedText, decodedResult) {
-    if (mockDatabase[decodedText]) {
-        const product = mockDatabase[decodedText];
-        document.getElementById('itemName').value = product.name;
-        
-        const expDate = new Date();
-        expDate.setDate(expDate.getDate() + product.shelfLife);
-        document.getElementById('expiryDate').value = expDate.toISOString().split('T')[0];
-        
-        alert(`Success! ${product.name} scanned.`);
-    } else {
-        document.getElementById('itemName').value = "Unknown Code: " + decodedText;
-        alert("Item database mein nahi mila. Kripya Expiry Date manually dalein.");
-    }
+    // 1. Scan hote hi camera band karein
     html5QrcodeScanner.clear();
     readerDiv.style.display = 'none';
+
+    // Helper Function: Normal Barcode ke liye API call
+    const fetchFromAPI = (barcodeNumber) => {
+        document.getElementById('itemName').value = "Searching API...";
+        fetch(`https://world.openfoodfacts.org/api/v0/product/${barcodeNumber}.json`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 1) {
+                    let productName = data.product.product_name || "Unknown Item";
+                    document.getElementById('itemName').value = productName;
+                    alert(`Product Found: ${productName}!\n\nKripya packet par dekh kar Expiry Date select karein.`);
+                    document.getElementById('expiryDate').focus(); 
+                } else {
+                    document.getElementById('itemName').value = barcodeNumber; 
+                    alert("Yeh item global database mein nahi mila. Kripya naam manually bharein.");
+                }
+            })
+            .catch(error => {
+                document.getElementById('itemName').value = barcodeNumber;
+                alert("Internet error. Kripya manual entry karein.");
+            });
+    };
+
+    // --- SMART ROUTER ---
+
+    // TYPE A: JSON QR Code (Agar curly brackets {} se start/end ho)
+    if (decodedText.trim().startsWith("{") && decodedText.trim().endsWith("}")) {
+        try {
+            let jsonData = JSON.parse(decodedText);
+            let itemName = jsonData.name || jsonData.itemName || jsonData.product || jsonData.barcode || "Local Item";
+            document.getElementById('itemName').value = itemName;
+            
+            if (jsonData.expiry || jsonData.date) {
+                document.getElementById('expiryDate').value = jsonData.expiry || jsonData.date;
+            }
+            alert("Smart QR (JSON) scanned successfully!");
+            return; 
+        } catch (e) {
+            console.log("JSON parse error", e);
+        }
+    }
+
+    // TYPE B: Text QR Code with Comma (e.g., "Fresh Paneer,2026-10-15")
+    if (decodedText.includes(",")) {
+        let parts = decodedText.split(",");
+        document.getElementById('itemName').value = parts[0].trim();
+        
+        let possibleDate = parts[1].trim();
+        if (possibleDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            document.getElementById('expiryDate').value = possibleDate;
+        }
+        alert("Smart QR (Text) scanned successfully!");
+        return; 
+    }
+
+    // TYPE C: Normal Barcode (Sirf Numbers) -> Call API
+    if (/^\d+$/.test(decodedText.trim())) {
+        fetchFromAPI(decodedText.trim());
+    } else {
+        // Fallback
+        document.getElementById('itemName').value = decodedText;
+        alert("Custom QR Scanned. Kripya details check karein.");
+    }
 }
 
 function onScanFailure(error) {
-    // Background scan errors ko ignore karein
+    // Ignore background errors
 }
 
-// App Core Logic
+// ==========================================
+// 2. CORE APP LOGIC (Storage, Dates & Colors)
+// ==========================================
 let foodItems = JSON.parse(localStorage.getItem('foodItems')) || [];
 const form = document.getElementById('foodForm');
 const foodList = document.getElementById('foodList');
@@ -80,6 +127,7 @@ function displayItems() {
         let statusText = `${daysDiff} days left`;
         let rowClass = ''; 
 
+        // Color Logic based on Expiry
         if (daysDiff < 0) {
             statusText = "Expired!";
             rowClass = 'expiring-soon'; 
@@ -110,4 +158,5 @@ function deleteItem(id) {
     displayItems();
 }
 
+// Initialize on page load
 displayItems();
