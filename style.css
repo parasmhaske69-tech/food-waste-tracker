@@ -1,17 +1,22 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f7f6;
+    /* Yeh ek online grocery/food image ka link hai */
+    background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1920&auto=format&fit=crop'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     margin: 0;
     padding: 20px;
 }
 
 .container {
     max-width: 600px;
-    background: white;
+    /* 0.90 ka matlab hai 90% white aur 10% transparent */
+    background-color: rgba(255, 255, 255, 0.90); 
     padding: 20px;
     margin: auto;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
 }
 
 h1, h2, p {
@@ -87,11 +92,4 @@ th, td {
 
 .delete-btn:hover {
     background-color: #c82333;
-}
-.summary { display: flex; gap: 10px; margin-bottom: 20px; }
-.summary div { flex: 1; padding: 10px; border-radius: 8px; text-align: center; background: #eef6ee; font-weight: bold; }
-
-@media (max-width: 600px) {
-  form { flex-direction: column; gap: 10px; }
-  input { width: 100%; box-sizing: border-box; }
 }
