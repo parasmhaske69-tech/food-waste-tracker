@@ -1,18 +1,16 @@
 body {
     font-family: Arial, sans-serif;
-    /* Yeh ek online grocery/food image ka link hai */
     background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1920&auto=format&fit=crop'); 
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     margin: 0;
-    padding: 20px;
+    padding: 15px;
 }
 
 .container {
     max-width: 600px;
-    /* 0.90 ka matlab hai 90% white aur 10% transparent */
-    background-color: rgba(255, 255, 255, 0.90); 
+    background-color: rgba(255, 255, 255, 0.95); 
     padding: 20px;
     margin: auto;
     border-radius: 10px;
@@ -23,35 +21,68 @@ h1, h2, p {
     text-align: center;
 }
 
+/* Default Layout for Mobile (Vertical) */
 form {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; 
+    gap: 15px;
     margin-bottom: 20px;
 }
 
 input {
-    padding: 10px;
-    width: 35%;
+    padding: 12px;
+    width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 12px 20px;
     background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
+    width: 100%;
 }
 
 button:hover {
     background-color: #218838;
 }
 
+/* Desktop Layout (Side by Side) */
+@media (min-width: 600px) {
+    form {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    input {
+        width: 35%; 
+    }
+    button {
+        width: auto;
+    }
+}
+
+.scan-button {
+    background-color: #007bff;
+    margin-bottom: 15px;
+}
+
+.scan-button:hover {
+    background-color: #0056b3;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 400px;
 }
 
 th, td {
@@ -60,34 +91,16 @@ th, td {
     text-align: center;
 }
 
-/* Red alert for 0 to 2 days or expired */
-.expiring-soon {
-    background-color: #ffcccc;
-    color: #cc0000;
-    font-weight: bold;
-}
-
-/* Yellow alert for 3 to 5 days */
-.expiring-medium {
-    background-color: #fff3cd;
-    color: #856404;
-    font-weight: bold;
-}
-
-/* Green status for more than 5 days */
-.expiring-safe {
-    background-color: #d4edda;
-    color: #155724;
-    font-weight: bold;
-}
+/* Status Colors */
+.expiring-soon { background-color: #ffcccc; color: #cc0000; font-weight: bold; }
+.expiring-medium { background-color: #fff3cd; color: #856404; font-weight: bold; }
+.expiring-safe { background-color: #d4edda; color: #155724; font-weight: bold; }
 
 .delete-btn {
     background-color: #dc3545;
     color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
+    padding: 8px 12px;
+    width: auto;
 }
 
 .delete-btn:hover {
