@@ -1,24 +1,18 @@
-// --- PROJECT DEMO DATABASE ---
-// Viva ke liye aap kuch sample barcodes yahan add kar sakte hain. 
-// "shelfLife" ka matlab item kitne din mein kharab hoga.
+// Mock Database Demo Barcodes ke liye
 const mockDatabase = {
     "8901030922881": { name: "Amul Milk", shelfLife: 2 },
     "8901262010014": { name: "Amul Butter", shelfLife: 30 },
     "8901058852337": { name: "Maggi Noodles", shelfLife: 180 },
-    // Agar aap custom QR code banate hain "Bread" text ka:
     "Bread": { name: "Fresh Bread", shelfLife: 4 } 
 };
 
-// --- SCANNER LOGIC ---
+// Scanner Logic
 const scanBtn = document.getElementById('scanBtn');
 const readerDiv = document.getElementById('reader');
 let html5QrcodeScanner;
 
 scanBtn.addEventListener('click', () => {
-    // Camera box show karein
     readerDiv.style.display = 'block';
-    
-    // Scanner initialize karein
     html5QrcodeScanner = new Html5QrcodeScanner(
         "reader", 
         { fps: 10, qrbox: { width: 250, height: 250 } },
@@ -28,40 +22,28 @@ scanBtn.addEventListener('click', () => {
 });
 
 function onScanSuccess(decodedText, decodedResult) {
-    // Beep sound ya alert
-    console.log(`Scan result: ${decodedText}`);
-
-    // Database mein check karein
     if (mockDatabase[decodedText]) {
         const product = mockDatabase[decodedText];
-        
-        // Name auto-fill
         document.getElementById('itemName').value = product.name;
         
-        // Expiry Date auto-fill (Aaj ki date + shelfLife days)
         const expDate = new Date();
         expDate.setDate(expDate.getDate() + product.shelfLife);
-        
-        // Date ko YYYY-MM-DD format mein convert karke input mein daalna
         document.getElementById('expiryDate').value = expDate.toISOString().split('T')[0];
         
         alert(`Success! ${product.name} scanned.`);
     } else {
-        // Agar barcode database mein nahi hai
-        document.getElementById('itemName').value = "Unknown Item Code: " + decodedText;
+        document.getElementById('itemName').value = "Unknown Code: " + decodedText;
         alert("Item database mein nahi mila. Kripya Expiry Date manually dalein.");
     }
-
-    // Scan hone ke baad camera band karein
     html5QrcodeScanner.clear();
     readerDiv.style.display = 'none';
 }
 
 function onScanFailure(error) {
-    // Error handle karne ke liye (silent fail hone dein warna console bhar jayega)
+    // Background scan errors ko ignore karein
 }
 
-// --- AAPKA PURANA LOGIC YAHAN SE CONTINUE KAREIN ---
+// App Core Logic
 let foodItems = JSON.parse(localStorage.getItem('foodItems')) || [];
 const form = document.getElementById('foodForm');
 const foodList = document.getElementById('foodList');
